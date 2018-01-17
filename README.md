@@ -1,6 +1,8 @@
 # bboxer-FE
+Status: Under development
 
-来一段 bbox
+
+给darknet和其他（？）来一段 BBox 用的
 
 ## Build Setup
 
