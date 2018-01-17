@@ -1,8 +1,15 @@
 # bboxer-FE
 Status: Under development
 
-
 给darknet和其他（？）来一段 BBox 用的
+
+
+## TODOLIST
+
+* [ ] Gallery
+* [ ] Backend
+* [ ] 多人协作
+* [ ] ????
 
 ## Build Setup
 
