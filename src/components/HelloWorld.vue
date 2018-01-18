@@ -26,6 +26,7 @@ export default {
         '人手',
         '人脸'
       ],
+      objectCount: 0,
       currentDrawing: {
         labelId: null,
         labelName: null
@@ -56,7 +57,7 @@ export default {
           let parentSVG = window.SVG(parent)
           let rectBBox = e.currentTarget.getBBox()
           let parentBBox = e.currentTarget.parentElement.getBBox()
-          let title = parentSVG.text(component.labels[labelIdx])
+          let title = parentSVG.text(`${component.labels[labelIdx]}${component.objectCount}`)
 
           title.font({
             family: '宋体',
@@ -64,6 +65,8 @@ export default {
           })
             .attr({stroke: color})
             .move(rectBBox.x, rectBBox.y)
+
+          component.objectCount += 1
 
 //          component._addLabelBBox(labelIdx, e.currentTarget, title.node)
           component.$bus.$emit('labelChanged', labelIdx, e.currentTarget, title.node)
@@ -76,7 +79,8 @@ export default {
       )
 
       bbox.draw()
-    }
+    },
+    loadImageData () {},
   },
   mounted () {
     let draw = window.SVG('drawing')
