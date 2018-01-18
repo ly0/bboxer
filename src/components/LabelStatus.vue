@@ -105,7 +105,7 @@ export default {
 //        this._deleteLabelBBox(idx)
 //      }
 
-      this.$bus.$emit('startDrawBBox', val, ['red', 'green', 'blue', 'cyan', 'yellow'][Math.floor(Math.random() * 5)])
+      this.$bus.$emit('startDrawBBox', val, this.metaData.labels[val],['red', 'green', 'blue', 'cyan', 'yellow'][Math.floor(Math.random() * 5)])
 
 //      for (let idx of underAdded) {
 //        console.log('startDrawBBox', idx)

@@ -22,22 +22,32 @@ export default {
   data () {
     return {
       drawing: null,
-      labels: [
-        '人手',
-        '人脸'
-      ],
       objectCount: 0,
       currentDrawing: {
         labelId: null,
-        labelName: null
+        labelName: null,
+        drawingObj: null
       }
     }
   },
   methods: {
-    bbox_object (labelIdx, color) {
+    canvasKeyEventsHandler (e) {
+      if (e.keyCode === 27) {
+        // ESC
+        if (this.currentDrawing.drawingObj !== null) {
+          // 可取消
+          let drawingObj = this.currentDrawing.drawingObj
+          this.currentDrawing.drawingObj = null
+          drawingObj.draw('cancel')
+
+        }
+      }
+      console.log(e)
+    },
+    bbox_object (labelIdx, labelName, color) {
 
       this.currentDrawing.labelId = labelIdx
-      this.currentDrawing.labelName = this.labels[labelIdx]
+      this.currentDrawing.labelName = labelName
 
       if (this.drawing === null) {
         throw new Exception('Unexpected error, drawing is not initiated.')
@@ -50,14 +60,20 @@ export default {
         'opacity': 0
       })
 
+      this.currentDrawing.drawingObj = bbox
+
       bbox.on('drawstop', ((component) => {
         return function (e) {
+          if (component.currentDrawing.drawingObj === null) {
+            component.currentDrawing.labelId = null
+            component.currentDrawing.labelName = null
+            return
+          }
           console.log('Draw done,', 'Label', labelIdx, 'Color', color)
           let parent = e.currentTarget.parentElement
           let parentSVG = window.SVG(parent)
           let rectBBox = e.currentTarget.getBBox()
-          let parentBBox = e.currentTarget.parentElement.getBBox()
-          let title = parentSVG.text(`${component.labels[labelIdx]}${component.objectCount}`)
+          let title = parentSVG.text(`${labelName}${component.objectCount}`)
 
           title.font({
             family: '宋体',
@@ -68,12 +84,11 @@ export default {
 
           component.objectCount += 1
 
-//          component._addLabelBBox(labelIdx, e.currentTarget, title.node)
           component.$bus.$emit('labelChanged', labelIdx, e.currentTarget, title.node)
 
           component.currentDrawing.labelId = null
           component.currentDrawing.labelName = null
-//          window.alert(`${labelIdx} ${(rectBBox.x / parentBBox.width).toFixed(16)} ${(rectBBox.y / parentBBox.height).toFixed(16)} ${(rectBBox.width / parentBBox.width).toFixed(16)} ${(rectBBox.height / parentBBox.height).toFixed(16)}`)
+          // window.alert(`${labelIdx} ${(rectBBox.x / parentBBox.width).toFixed(16)} ${(rectBBox.y / parentBBox.height).toFixed(16)} ${(rectBBox.width / parentBBox.width).toFixed(16)} ${(rectBBox.height / parentBBox.height).toFixed(16)}`)
         }
       })(this)
       )
@@ -87,7 +102,7 @@ export default {
 
     this.drawing = draw
 
-    let img = draw.image('http://a.hiphotos.baidu.com/image/pic/item/503d269759ee3d6d453aab8b48166d224e4adef5.jpg')
+    let img = draw.image('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516851157&di=ab26fe65d7b1816b60c2e14e712e8135&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.newmotor.com.cn%2FUploadFiles%2Fimage%2F20150521%2F20150521182212961296.jpg')
 
     img.loaded(function (loader) {
       this.size(loader.width, loader.height)
@@ -96,13 +111,16 @@ export default {
 
 
     this.$bus.$on('startDrawBBox', ((component) => {
-      return function (idx, color) {
+      return function (idx, tag, color) {
         console.log('Event startDrawBBox')
-        component.bbox_object(idx, color);
+        component.bbox_object(idx, tag, color);
 
       }
     })(this))
     // 传给左边栏数据
+
+
+    window.addEventListener('keyup', this.canvasKeyEventsHandler)
 
   }
 }
