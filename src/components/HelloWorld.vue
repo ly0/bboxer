@@ -3,12 +3,53 @@
     <v-alert color="info" icon="info" value="true" transition="fade-transition" v-if="currentDrawing.labelId !== null">
       目前正在画 LabelId: {{ currentDrawing.labelId }}, LabelName: {{ currentDrawing.labelName }}
     </v-alert>
-    <div id="drawing"></div>
+    <div class="canvasContainer">
+      <div class="previous">
+        <a>
+        <v-icon x-large>fa-chevron-circle-left</v-icon></a>
+      </div>
+
+      <div id="drawing"></div>
+      <div class="next">
+        <a>
+          <v-icon x-large>fa-chevron-circle-right</v-icon>
+        </a>
+      </div>
+    </div>
+
 </div>
 </template>
 
 <style lang="scss">
+.canvasContainer {
+  display: flex;
 
+  .previous {
+    flex: 1;
+    margin:auto;
+    padding-right: 24px;
+
+    i:hover {
+      color: #424242;
+    }
+
+  }
+
+  .drawing {
+    flex: 1;
+  }
+
+  .next {
+    flex: 1;
+    margin:auto;
+    padding-left: 24px;
+
+    i:hover {
+      color: #424242;
+    }
+  }
+
+}
 </style>
 <script>
 import 'svg.js/dist/svg.js'
@@ -88,7 +129,7 @@ export default {
 
           component.currentDrawing.labelId = null
           component.currentDrawing.labelName = null
-          // window.alert(`${labelIdx} ${(rectBBox.x / parentBBox.width).toFixed(16)} ${(rectBBox.y / parentBBox.height).toFixed(16)} ${(rectBBox.width / parentBBox.width).toFixed(16)} ${(rectBBox.height / parentBBox.height).toFixed(16)}`)
+          component.currentDrawing.drawingObj = null
         }
       })(this)
       )
@@ -112,6 +153,9 @@ export default {
 
     this.$bus.$on('startDrawBBox', ((component) => {
       return function (idx, tag, color) {
+        if (component.currentDrawing.drawingObj !== null) {
+          return
+        }
         console.log('Event startDrawBBox')
         component.bbox_object(idx, tag, color);
 

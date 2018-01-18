@@ -39,6 +39,14 @@
           <!--<v-switch :label="item" v-model="labeled" :value="index" @change="handleLabelCheckboxChange"></v-switch>-->
         </div>
       </v-card-text>
+  <v-card-text>
+        <v-btn
+          color="success"
+          @click.native="getBBoxResult()"
+        >
+          Generate
+        </v-btn>
+  </v-card-text>
     </v-card>
   </div>
 </template>
@@ -77,39 +85,26 @@ export default {
   },
   methods: {
     _addLabelBBox (labelIdx, bboxSVGObject, bboxTitleSVGObject) {
-//      if (labelIdx in this.BBoxData) {
-//        this.BBoxData[labelIdx].bbox.remove()
-//        this.BBoxData[labelIdx].title.remove()
-//      }
-
       this.BBoxData.push({
         labelIdx: labelIdx,
         bbox: bboxSVGObject,
         title: bboxTitleSVGObject
       })
     },
+    getBBoxResult () {
+      let result = '';
+
+      for (let item of this.BBoxData) {
+        let parent = item.bbox.parentElement
+        let parentBBox = parent.getBBox()
+        let bbox = item.bbox.getBBox()
+
+        result += `${item.labelIdx} ${(bbox.x / parentBBox.width).toFixed(16)} ${(bbox.y / parentBBox.height).toFixed(16)} ${(bbox.width / parentBBox.width).toFixed(16)} ${(bbox.height / parentBBox.height).toFixed(16)}\r\n`
+      }
+      window.alert(result)
+    },
     handleLabelCheckboxChange (val) {
-//      // 等待删除
-//      let underDeleted = Object.keys(this.BBoxData).filter((e) => {
-//        return (val.indexOf(parseInt(e)) === -1)
-//      })
-//      // 等待增加
-//      let underAdded = val.filter((e) => {
-//        return !(e in this.BBoxData)
-//      })
-
-//      console.log('this.BBoxData', this.BBoxData, 'this.labeled', this.labeled, 'val', val, 'underDeleted', underDeleted, 'underAdded', underAdded)
-
-//      for (let idx of underDeleted) {
-//        console.log('Delete selected, label', idx)
-//        this._deleteLabelBBox(idx)
-//      }
-
       this.$bus.$emit('startDrawBBox', val, this.metaData.labels[val],['red', 'green', 'blue', 'cyan', 'yellow'][Math.floor(Math.random() * 5)])
-
-//      for (let idx of underAdded) {
-//        console.log('startDrawBBox', idx)
-//      }
     },
     deleteLabeledObject (idx) {
       this.BBoxData[idx].bbox.remove()
