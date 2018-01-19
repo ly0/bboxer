@@ -117,6 +117,15 @@ export default {
         this.BBoxData[labelIdx].title.remove()
       }
       delete this.BBoxData[labelIdx]
+    },
+    keyDownHandlers (e) {
+      if (e.keyCode >= 48 && e.keyCode <= 57) {
+        let labelIdx = e.keyCode - 48
+
+        if (labelIdx < this.metaData.labels.length) {
+          this.handleLabelCheckboxChange(labelIdx)
+        }
+      }
     }
   },
 
@@ -135,6 +144,9 @@ export default {
       drawing: false
     }
   },
+  beforeDestroy () {
+    window.removeEventListener('keydown', this.keyDownHandlers)
+  },
   created () {
     this.$bus.$on('metaDataLoaded', function (id) {
       // ...
@@ -146,6 +158,8 @@ export default {
         })
       })(this)
     )
+
+    window.addEventListener('keydown', this.keyDownHandlers)
   }
 }
 </script>

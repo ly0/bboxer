@@ -138,6 +138,11 @@ export default {
     },
     loadImageData () {},
   },
+
+  beforeDestroy () {
+    // 离开时注销绑定
+    window.removeEventListener('keyup', this.canvasKeyEventsHandler)
+  },
   mounted () {
     let draw = window.SVG('drawing')
 
