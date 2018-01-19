@@ -6,36 +6,31 @@
 
     <div class="canvasContainer">
       <!--<div class="previous" v-if="this.Store.imageLoaded">-->
-        <!--<a>-->
-        <!--<v-icon x-large>fa-chevron-circle-left</v-icon></a>-->
+      <!--<a>-->
+      <!--<v-icon x-large>fa-chevron-circle-left</v-icon></a>-->
       <!--</div>-->
 
       <div id="drawing"></div>
-      <div class="next" v-if="this.Store.imageLoaded">
-        <a>
-          <v-icon x-large>fa-chevron-circle-right</v-icon>
-        </a>
-      </div>
+      <!--<div class="next" v-if="this.Store.imageLoaded">-->
+        <!--<a>-->
+          <!--<v-icon x-large>fa-chevron-circle-right</v-icon>-->
+        <!--</a>-->
+      <!--</div>-->
     </div>
 
     <div v-if="!this.Store.imageLoaded && !this.Store.allDone">
       <v-progress-circular indeterminate v-bind:size="100" v-bind:width="7" color="grey"></v-progress-circular>
       <!--<div class="headline grey&#45;&#45;text" style="text-align: center">-->
-        <!--LOADING-->
+      <!--LOADING-->
       <!--</div>-->
     </div>
 
-
     <div v-if="this.Store.allDone">
       <div class="headline grey--text" style="text-align: center">
-      打标完成，请开始炼丹。
+        打标完成，请开始炼丹。
       </div>
     </div>
-
-
-
-
-</div>
+  </div>
 </template>
 
 <style lang="scss">
@@ -100,13 +95,11 @@ export default {
           let drawingObj = this.currentDrawing.drawingObj
           this.currentDrawing.drawingObj = null
           drawingObj.draw('cancel')
-
         }
       }
       console.log(e)
     },
     bbox_object (labelIdx, labelName, color) {
-
       this.currentDrawing.labelId = labelIdx
       this.currentDrawing.labelName = labelName
 
@@ -157,21 +150,18 @@ export default {
       bbox.draw()
     },
     loadImageData (url) {
-
       let img = this.drawing.image(url)
 
       img.loaded(((component) => {
-
         return function (loader) {
           this.size(loader.width, loader.height)
           this.parent().size(loader.width, loader.height)
 
           component.Store.imageLoaded = true
         }
-
       })(this)
       )
-    },
+    }
   },
 
   beforeDestroy () {
@@ -188,8 +178,7 @@ export default {
           return
         }
         console.log('Event startDrawBBox')
-        component.bbox_object(idx, tag, color);
-
+        component.bbox_object(idx, tag, color)
       }
     })(this))
     // 传给左边栏数据
@@ -203,7 +192,6 @@ export default {
     })(this))
 
     window.addEventListener('keyup', this.canvasKeyEventsHandler)
-
   }
 }
 </script>

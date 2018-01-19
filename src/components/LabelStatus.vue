@@ -24,8 +24,7 @@
         <div class="title">标签列表</div>
       </v-card-title>
       <v-card-text>
-        <div v-for="(item, index) in metaData.labels">
-
+        <div v-for="(item, index) in metaData.labels" :key="index">
           <v-btn
             color="info"
             :loading="drawing"
@@ -76,8 +75,9 @@
 
 </style>
 <script>
-  import VCardTitle from 'vuetify/es5/components/VCard/VCardTitle'
-  import Store from '@/store.js'
+import VCardTitle from 'vuetify/es5/components/VCard/VCardTitle'
+import Store from '@/store.js'
+
 export default {
   components: {VCardTitle},
   name: 'LabelStatus',
@@ -118,15 +118,14 @@ export default {
         this.BBoxData = []
         this.getNextImage()
       })
-//      window.alert(result)
     },
     handleLabelCheckboxChange (val) {
-      this.$bus.$emit('startDrawBBox', val, this.metaData.labels[val],['red', 'green', 'blue', 'cyan', 'yellow'][Math.floor(Math.random() * 5)])
+      this.$bus.$emit('startDrawBBox', val, this.metaData.labels[val], ['red', 'green', 'blue', 'cyan', 'yellow'][Math.floor(Math.random() * 5)])
     },
     deleteLabeledObject (idx) {
       this.BBoxData[idx].bbox.remove()
       this.BBoxData[idx].title.remove()
-      this.BBoxData.splice(idx, 1);
+      this.BBoxData.splice(idx, 1)
     },
     _deleteLabelBBox (labelIdx) {
       if (labelIdx in this.BBoxData) {
@@ -163,7 +162,6 @@ export default {
   watch: {
   },
   data () {
-
     return {
       Store,
       currentImageUrl: '',
@@ -186,12 +184,11 @@ export default {
       // ...
     })
 
-
     this.$bus.$on('labelChanged', ((component) => {
-        return (function (labelIdx, bboxSVGObject, bboxTitleSVGObject) {
-          component._addLabelBBox(labelIdx, bboxSVGObject, bboxTitleSVGObject)
-        })
-      })(this)
+      return function (labelIdx, bboxSVGObject, bboxTitleSVGObject) {
+        component._addLabelBBox(labelIdx, bboxSVGObject, bboxTitleSVGObject)
+      }
+    })(this)
     )
 
     window.addEventListener('keydown', this.keyDownHandlers)
