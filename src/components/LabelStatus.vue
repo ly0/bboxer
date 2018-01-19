@@ -25,6 +25,7 @@
       </v-card-title>
       <v-card-text>
         <div v-for="(item, index) in metaData.labels" :key="index">
+          {{index}}
           <v-btn
             color="info"
             :loading="drawing"
@@ -42,8 +43,10 @@
           color="success"
           @click.native="getBBoxResult()"
         >
-          Generate
+          上传数据
         </v-btn>
+    <span>
+        剩余样本 {{ unlabeledLeft }}</span>
   </v-card-text>
     </v-card>
   </div>
@@ -166,11 +169,10 @@ export default {
       Store,
       currentImageUrl: '',
       BBoxData: [],
+      unlabeledLeft: -1,
       labeled: [],
       metaData: {
         labels: [
-          '人手',
-          '人脸'
         ]
       },
       drawing: false
@@ -193,7 +195,14 @@ export default {
 
     window.addEventListener('keydown', this.keyDownHandlers)
 
-    this.getNextImage()
+    this.http.get(
+      'http://127.0.0.1:58080/config'
+    ).then((resp) => {
+      this.unlabeledLeft = resp.data.image_left
+      this.metaData.labels = resp.data.labels
+      debugger
+      this.getNextImage()
+    })
   }
 }
 </script>

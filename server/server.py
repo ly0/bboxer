@@ -81,7 +81,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     with open(args.labels, 'r') as f:
-        labels = f.read().replace('\r', '').split('\n')
+        labels = f.read().replace('\r', '').strip().split('\n')
 
     serve(args.path)
 
