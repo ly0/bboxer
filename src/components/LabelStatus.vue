@@ -24,8 +24,9 @@
         <div class="title">标签列表</div>
       </v-card-title>
       <v-card-text>
+        <v-chip close v-model="bboxtips" color="red" text-color="white">0-9键可以快速来一段BBox</v-chip>
+
         <div v-for="(item, index) in metaData.labels" :key="index">
-          {{index}}
           <v-btn
             color="info"
             :loading="drawing"
@@ -175,7 +176,8 @@ export default {
         labels: [
         ]
       },
-      drawing: false
+      drawing: false,
+      bboxtips: true
     }
   },
   beforeDestroy () {
@@ -200,7 +202,6 @@ export default {
     ).then((resp) => {
       this.unlabeledLeft = resp.data.image_left
       this.metaData.labels = resp.data.labels
-      debugger
       this.getNextImage()
     })
   }
