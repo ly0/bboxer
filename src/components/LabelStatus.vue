@@ -1,5 +1,5 @@
 <template>
-  <div id="labelStatus">
+  <div id="labelStatus" v-if="Store.imageLoaded">
     <v-card color="blue-grey darken-2" class="white--text">
     <v-list>
       <v-card-title>
@@ -30,7 +30,6 @@
             color="info"
             :loading="drawing"
             @click.native="handleLabelCheckboxChange(index)"
-            :disabled="loading2"
           >
             {{ item }}
             <span slot="loader">Drawing...</span>
@@ -78,6 +77,7 @@
 </style>
 <script>
   import VCardTitle from 'vuetify/es5/components/VCard/VCardTitle'
+  import Store from '@/store.js'
 export default {
   components: {VCardTitle},
   name: 'LabelStatus',
@@ -92,7 +92,7 @@ export default {
       })
     },
     getBBoxResult () {
-      let result = '';
+      let result = ''
 
       for (let item of this.BBoxData) {
         let parent = item.bbox.parentElement
@@ -101,7 +101,24 @@ export default {
 
         result += `${item.labelIdx} ${(bbox.x / parentBBox.width).toFixed(16)} ${(bbox.y / parentBBox.height).toFixed(16)} ${(bbox.width / parentBBox.width).toFixed(16)} ${(bbox.height / parentBBox.height).toFixed(16)}\r\n`
       }
-      window.alert(result)
+
+      // upload
+
+      this.http.post('http://127.0.0.1:58080/upload_label', {
+        path: this.currentImageUrl,
+        label_data: result
+      }).then((resp) => {
+        window.alert('上传成功')
+        this.Store.imageLoaded = false
+        for (let i of this.BBoxData) {
+          i.bbox.remove()
+          i.title.remove()
+        }
+
+        this.BBoxData = []
+        this.getNextImage()
+      })
+//      window.alert(result)
     },
     handleLabelCheckboxChange (val) {
       this.$bus.$emit('startDrawBBox', val, this.metaData.labels[val],['red', 'green', 'blue', 'cyan', 'yellow'][Math.floor(Math.random() * 5)])
@@ -118,6 +135,20 @@ export default {
       }
       delete this.BBoxData[labelIdx]
     },
+
+    getNextImage () {
+      this.http.get(
+        'http://127.0.0.1:58080/next'
+      ).then((resp) => {
+        if (!resp.data) {
+          this.Store.allDone = true
+          return
+        }
+        this.currentImageUrl = resp.data
+        this.$bus.$emit('imageLoadRequest', `http://127.0.0.1:58080/image/${resp.data}`)
+      })
+    },
+
     keyDownHandlers (e) {
       if (e.keyCode >= 48 && e.keyCode <= 57) {
         let labelIdx = e.keyCode - 48
@@ -132,7 +163,10 @@ export default {
   watch: {
   },
   data () {
+
     return {
+      Store,
+      currentImageUrl: '',
       BBoxData: [],
       labeled: [],
       metaData: {
@@ -152,6 +186,7 @@ export default {
       // ...
     })
 
+
     this.$bus.$on('labelChanged', ((component) => {
         return (function (labelIdx, bboxSVGObject, bboxTitleSVGObject) {
           component._addLabelBBox(labelIdx, bboxSVGObject, bboxTitleSVGObject)
@@ -160,6 +195,8 @@ export default {
     )
 
     window.addEventListener('keydown', this.keyDownHandlers)
+
+    this.getNextImage()
   }
 }
 </script>

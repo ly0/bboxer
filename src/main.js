@@ -9,6 +9,7 @@ import axios from 'axios'
 import 'font-awesome/css/font-awesome.css'
 
 Vue.prototype.$bus = new Vue()
+// Vue.prototype.$store = new Vue()
 Vue.prototype.http = axios
 
 Vue.use(Vuetify)

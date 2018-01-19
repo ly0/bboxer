@@ -3,19 +3,37 @@
     <v-alert color="info" icon="info" value="true" transition="fade-transition" v-if="currentDrawing.labelId !== null">
       目前正在画 LabelId: {{ currentDrawing.labelId }}, LabelName: {{ currentDrawing.labelName }}
     </v-alert>
+
     <div class="canvasContainer">
-      <div class="previous">
-        <a>
-        <v-icon x-large>fa-chevron-circle-left</v-icon></a>
-      </div>
+      <!--<div class="previous" v-if="this.Store.imageLoaded">-->
+        <!--<a>-->
+        <!--<v-icon x-large>fa-chevron-circle-left</v-icon></a>-->
+      <!--</div>-->
 
       <div id="drawing"></div>
-      <div class="next">
+      <div class="next" v-if="this.Store.imageLoaded">
         <a>
           <v-icon x-large>fa-chevron-circle-right</v-icon>
         </a>
       </div>
     </div>
+
+    <div v-if="!this.Store.imageLoaded && !this.Store.allDone">
+      <v-progress-circular indeterminate v-bind:size="100" v-bind:width="7" color="grey"></v-progress-circular>
+      <!--<div class="headline grey&#45;&#45;text" style="text-align: center">-->
+        <!--LOADING-->
+      <!--</div>-->
+    </div>
+
+
+    <div v-if="this.Store.allDone">
+      <div class="headline grey--text" style="text-align: center">
+      打标完成，请开始炼丹。
+      </div>
+    </div>
+
+
+
 
 </div>
 </template>
@@ -54,6 +72,7 @@
 <script>
 import 'svg.js/dist/svg.js'
 import 'svg.draw.js/dist/svg.draw.js'
+import Store from '@/store.js'
 
 function Exception (message) {
   this.message = message
@@ -62,6 +81,7 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
+      Store: Store,
       drawing: null,
       objectCount: 0,
       currentDrawing: {
@@ -136,7 +156,22 @@ export default {
 
       bbox.draw()
     },
-    loadImageData () {},
+    loadImageData (url) {
+
+      let img = this.drawing.image(url)
+
+      img.loaded(((component) => {
+
+        return function (loader) {
+          this.size(loader.width, loader.height)
+          this.parent().size(loader.width, loader.height)
+
+          component.Store.imageLoaded = true
+        }
+
+      })(this)
+      )
+    },
   },
 
   beforeDestroy () {
@@ -145,16 +180,7 @@ export default {
   },
   mounted () {
     let draw = window.SVG('drawing')
-
     this.drawing = draw
-
-    let img = draw.image('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516851157&di=ab26fe65d7b1816b60c2e14e712e8135&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.newmotor.com.cn%2FUploadFiles%2Fimage%2F20150521%2F20150521182212961296.jpg')
-
-    img.loaded(function (loader) {
-      this.size(loader.width, loader.height)
-      this.parent().size(loader.width, loader.height)
-    })
-
 
     this.$bus.$on('startDrawBBox', ((component) => {
       return function (idx, tag, color) {
@@ -168,6 +194,13 @@ export default {
     })(this))
     // 传给左边栏数据
 
+    this.$bus.$on('imageLoadRequest', ((component) => {
+      return function (url) {
+        component.objectCount = 0
+        component.imageLoaded = false
+        component.loadImageData(url)
+      }
+    })(this))
 
     window.addEventListener('keyup', this.canvasKeyEventsHandler)
 
