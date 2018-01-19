@@ -6,6 +6,7 @@ from bottle import route, run, template, request, response, static_file
 import json
 
 ROOT_PATH = ''
+labels = []
 file_lst = []
 
 @route('/upload_label', method='OPTIONS')
@@ -61,7 +62,7 @@ def get_config():
     response.set_header('Content-Type', 'application/json')
 
     return json.dumps({
-        'labels': ['人手', '人脸'],
+        'labels': labels,
         'data_path': ROOT_PATH,
         'image_left': len(file_lst)
     }) 
@@ -75,8 +76,12 @@ def serve(path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--labels", help="Labels file, one line for one label", default="labels.txt")
     parser.add_argument("path", help="Data path")
     args = parser.parse_args()
+
+    with open(args.labels, 'r') as f:
+        labels = f.read().replace('\r', '').split('\n')
 
     serve(args.path)
 
