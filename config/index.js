@@ -42,6 +42,17 @@ module.exports = {
 
     cssSourceMap: true
   },
+  pack: {
+    // Template for index.html
+    index: path.resolve(__dirname, '../dist/resource/index.html'),
+
+    // Paths
+    assetsRoot: path.resolve(__dirname, '../dist/resource'),
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    serverFilePath: path.resolve(__dirname, '../server/server.py'),
+    targetServerFilePath: path.resolve(__dirname, '../dist/server.py')
+  },
 
   build: {
     // Template for index.html

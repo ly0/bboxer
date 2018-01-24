@@ -7,22 +7,22 @@
       app
     >
       <v-list dense>
-        <v-list-tile @click="dummyClick()">
-          <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>概览</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="dummyClick()">
-          <v-list-tile-action>
-            <v-icon>settings</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>来一段BBox</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <!--<v-list-tile @click="dummyClick()">-->
+          <!--<v-list-tile-action>-->
+            <!--<v-icon>dashboard</v-icon>-->
+          <!--</v-list-tile-action>-->
+          <!--<v-list-tile-content>-->
+            <!--<v-list-tile-title>概览</v-list-tile-title>-->
+          <!--</v-list-tile-content>-->
+        <!--</v-list-tile>-->
+        <!--<v-list-tile @click="dummyClick()">-->
+          <!--<v-list-tile-action>-->
+            <!--<v-icon>settings</v-icon>-->
+          <!--</v-list-tile-action>-->
+          <!--<v-list-tile-content>-->
+            <!--<v-list-tile-title>来一段BBox</v-list-tile-title>-->
+          <!--</v-list-tile-content>-->
+        <!--</v-list-tile>-->
         <v-label-status />
       </v-list>
 

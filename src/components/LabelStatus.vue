@@ -108,7 +108,7 @@ export default {
 
       // upload
 
-      this.http.post('http://127.0.0.1:58080/upload_label', {
+      this.http.post('/upload_label', {
         path: this.currentImageUrl,
         label_data: result
       }).then((resp) => {
@@ -141,14 +141,14 @@ export default {
 
     getNextImage () {
       this.http.get(
-        'http://127.0.0.1:58080/next'
+        '/next'
       ).then((resp) => {
         if (!resp.data) {
           this.Store.allDone = true
           return
         }
         this.currentImageUrl = resp.data
-        this.$bus.$emit('imageLoadRequest', `http://127.0.0.1:58080/image/${resp.data}`)
+        this.$bus.$emit('imageLoadRequest', `/image/${resp.data}`)
       })
     },
 
@@ -198,7 +198,7 @@ export default {
     window.addEventListener('keydown', this.keyDownHandlers)
 
     this.http.get(
-      'http://127.0.0.1:58080/config'
+      '/config'
     ).then((resp) => {
       this.unlabeledLeft = resp.data.image_left
       this.metaData.labels = resp.data.labels
