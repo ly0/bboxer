@@ -125,6 +125,7 @@ export default {
         }
 
         this.BBoxData = []
+        this.unlabeledLeft -= 1
         this.getNextImage()
       })
     },
