@@ -18,6 +18,7 @@ import sys
 # Imports and Python 2/3 unification ##########################################
 ###############################################################################
 
+__version__ = '0.1'
 
 import base64, cgi, email.utils, functools, hmac, imp, itertools, mimetypes,\
         os, re, tempfile, threading, time, warnings, weakref, hashlib
