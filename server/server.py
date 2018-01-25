@@ -4345,8 +4345,6 @@ def _main(argv):  # pragma: no coverage
 import sys
 import os
 import argparse
-import bottle
-from bottle import route, run, template, request, response, static_file
 import json
 
 ROOT_PATH = ''
