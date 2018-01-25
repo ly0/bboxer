@@ -107,7 +107,12 @@ export default {
       }
 
       // upload
-
+      if (result === '') {
+        let noDataConfirm = window.confirm('没有打任何Label，确定提交？')
+        if (!noDataConfirm) {
+          return
+        }
+      }
       this.http.post('/upload_label', {
         path: this.currentImageUrl,
         label_data: result
@@ -159,6 +164,9 @@ export default {
         if (labelIdx < this.metaData.labels.length) {
           this.handleLabelCheckboxChange(labelIdx)
         }
+      } else if (e.keyCode === 13) {
+        // 回车按下，应该提交BBox
+        this.getBBoxResult()
       }
     }
   },
