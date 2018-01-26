@@ -1,7 +1,8 @@
-# bboxer-FE
-Status: Under development
+# bboxer
+打框框，输出label文件用的，目前输出的是darknet的数据格式，理论上可以输出任何格式
 
-给darknet和其他（？）来一段 BBox 用的
+大概这种感觉？嘛，大概先是这样了。
+![image](https://user-images.githubusercontent.com/1551736/35431097-26998a5e-02b6-11e8-819f-75339ec4d72e.png)
 
 
 ## TODOLIST
@@ -17,15 +18,9 @@ Status: Under development
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
 # pack all motherfucker things
 npm run pack
+
+cd dist
+python3 server --labels=LABEL_FILE DATASET_PATH
 ```
